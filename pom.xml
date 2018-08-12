@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.rt</groupId>
+    <artifactId>Custom-Classloader</artifactId>
+    <version>1.0.0</version>
+
+    <name>Custom Class Loader </name>
+    <description>Custom Class Loader to load classes from jar files </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <java.version>1.8</java.version>
+        <repoId>Github</repoId>
+        <repoUrl>https://github.com/ramintagizade/ClassLoader</repoUrl>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>${repoId}</id>
+            <url>${repoUrl}</url>
+        </repository>
+    </repositories>
+
+
+    <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>RELEASE</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>5.0.6.RELEASE</version>
+            </dependency>
+
+        </dependencies>
+
+        <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>install-evip-jar</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>mvn</executable>
+                    <arguments>
+                        <argument>deploy:deploy-file</argument>
+                        <argument>-Dfile=${basedir}/target/${project.artifactId}-${project.version}.${project.packaging}</argument>
+                        <argument>-DgroupId=${project.groupId}</argument>
+                        <argument>-DartifactId=${project.artifactId}</argument>
+                        <argument>-Dversion=${project.version}</argument>
+                        <argument>-Dpackaging=${project.packaging}</argument>
+                        <argument>-DrepositoryId=${repoId}</argument>
+                        <argument>-Durl=${repoUrl}</argument>
+                        <argument>-DpomFile=${basedir}/pom.xml</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+        </build>
+</project>

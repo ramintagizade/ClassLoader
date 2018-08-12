@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN" monitorInterval="1800"><!--seconds-->
+    <Properties>
+        <Property name="LOG_DIR">./log</Property>
+        <Property name="ARCHIVE_DIR">${LOG_DIR}/archive</Property>
+        <Property name="FILENAME_DEBUG">Debug</Property>
+        <Property name="FILENAME_LOG">Log</Property>
+        <Property name="FILENAME_ERROR">Error</Property>
+        <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
+        <Property name="PATTERN">%highlight{%d{DEFAULT} [%t] %-5p: %c{1.}:%M(%L): %msg%xEx{5,filters(${filters})}%n}</Property>
+        <!--<Property name="PATTERN">%highlight{%d{DEFAULT} [%t] %-5p: %c{1}: %msg%throwable{short.lineNumber}%n}</Property>-->
+        <!--<Property name="PATTERN">%highlight{%d [%t] %-5level: %c{1.}:%M(%L): %msg%n}</Property>-->
+        <!--<Property name="PATTERN">%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</Property>-->
+        <!--<Property name="PATTERN">%d %p %c{1.} [%t] %m %ex%n</Property>-->
+        <!--<Property name="PATTERN">%-5p] %d [%t] %c{1}.%M():%L - %m%n</Property>-->
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}"/>
+        </Console>
+
+        <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
+        <RollingRandomAccessFile name="AP_DEBUG"
+                                 fileName="${LOG_DIR}/${FILENAME_DEBUG}.log"
+                                 filePattern="${ARCHIVE_DIR}/${FILENAME_DEBUG}_%d{yyyy-MM-dd}.log.gz"
+                                 immediateFlush="false">
+            <PatternLayout pattern="${PATTERN}"/>
+            <Filters>
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" maxRandomDelay="5"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="AP_LOG"
+                                 fileName="${LOG_DIR}/${FILENAME_LOG}.log"
+                                 filePattern="${ARCHIVE_DIR}/${FILENAME_LOG}_%d{yyyy-MM-dd}.log.gz"
+                                 immediateFlush="false">
+            <PatternLayout pattern="${PATTERN}"/>
+            <Filters>
+                <!-- This filter accepts info, warn, error, fatal and denies debug/trace -->
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" maxRandomDelay="10"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="AP_ERROR"
+                                 fileName="${LOG_DIR}/${FILENAME_ERROR}.log"
+                                 filePattern="${ARCHIVE_DIR}/${FILENAME_ERROR}_%d{yyyy-MM-dd}.log.gz"
+                                 immediateFlush="false">
+            <PatternLayout pattern="${PATTERN}"/>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" maxRandomDelay="15"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <Failover name="FailoverAppenderLOG" primary="AP_LOG">
+            <Failovers>
+                <AppenderRef ref="Console" />
+            </Failovers>
+        </Failover>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO" includeLocation="true">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AP_DEBUG"/>
+            <AppenderRef ref="AP_LOG"/>
+        </Root>
+
+    </Loggers>
+</Configuration>
