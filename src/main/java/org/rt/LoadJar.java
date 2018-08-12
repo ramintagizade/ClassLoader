@@ -53,22 +53,25 @@ public class LoadJar {
 
                 if (jarEntry.isDirectory()) continue;
 
-                byte[] buffer = new byte[2048];
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                for (; ; ) {
-                    int nBytes = jarInputStream.read(buffer);
-                    if (nBytes <= 0) {
-                        break;
+                if(jarEntry.getName().endsWith(".class")) {
+                    byte[] buffer = new byte[2048];
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    for (; ; ) {
+                        int nBytes = jarInputStream.read(buffer);
+                        if (nBytes <= 0) {
+                            break;
+                        }
+                        outputStream.write(buffer, 0, nBytes);
                     }
-                    outputStream.write(buffer, 0, nBytes);
+
+                    byte[] bytes = outputStream.toByteArray();
+                    String className = jarEntry.getName().replaceAll("/", ".");
+                    jarContents.put(className, bytes);
+
+                    logger.info("loaded Class  : " + className);
+
+                    outputStream.close();
                 }
-
-                byte[] bytes = outputStream.toByteArray();
-                jarContents.put(jarEntry.getName(), bytes);
-
-                logger.info("loaded Class  : " + jarEntry.getName());
-
-                outputStream.close();
             }
         }
         catch (Exception e) {
