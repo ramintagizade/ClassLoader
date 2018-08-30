@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -14,7 +13,7 @@ import java.util.jar.JarInputStream;
  * @author Ramin Taghizada
  */
 
-public class LoadJar {
+public class LoadJar extends ClassLoader{
 
     private static Logger logger = LogManager.getLogger(LoadJar.class);
     protected Map<String, byte[] > jarContents;
@@ -65,10 +64,9 @@ public class LoadJar {
                     }
 
                     byte[] bytes = outputStream.toByteArray();
-                    String className = jarEntry.getName().replaceAll("/", ".");
-                    jarContents.put(className, bytes);
 
-                    logger.info("loaded Class  : " + className);
+                    String className = jarEntry.getName().replace(".class", "").replace("/", ".");
+                    jarContents.put(className, bytes);
 
                     outputStream.close();
                 }

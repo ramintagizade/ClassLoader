@@ -2,7 +2,6 @@ package org.rt;
 
 import org.junit.Test;
 
-import java.io.IOException;
 
 
 /**
@@ -12,17 +11,17 @@ import java.io.IOException;
 public class TestLoadJar {
 
     @Test
-    public void testLoadJar() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        //LoadJar loadJar = new LoadJar();
-        //loadJar.loadJar(System.getProperty("user.dir")+"/lib/testJar-1.0.0.jar");
+    public void testLoadJar() throws Exception, ClassNotFoundException, IllegalAccessException, InstantiationException {
 
-        //LoadResources loadResources = new LoadResources();
-        //loadResources.loadResource(System.getProperty("user.dir")+"/lib");
-
-        CustomClassLoader customClassLoader = new CustomClassLoader();
+        CustomClassLoader customClassLoader = new CustomClassLoader(TestLoadJar.class.getClassLoader());
         customClassLoader.load(System.getProperty("user.dir")+"/lib");
 
-        Class clazz = customClassLoader.loadClass("org.rt.Main.class");
-        System.out.println(clazz);
+        Class clazz = customClassLoader.loadClass("org.rt.Main",true);
+
+
+        System.out.println("Class : " + clazz.getName());
+
+
+
     }
 }
