@@ -4,7 +4,7 @@
 
     <groupId>io.github.ramintagizade</groupId>
     <artifactId>Custom-Classloader</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>Custom Class Loader </name>
     <description>Custom Class Loader to load classes from jar files </description>
