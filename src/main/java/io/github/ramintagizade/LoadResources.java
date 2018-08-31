@@ -1,4 +1,4 @@
-package org.rt;
+package io.github.ramintagizade;
 
 import java.io.File;
 import java.io.IOException;

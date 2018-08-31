@@ -1,4 +1,4 @@
-package org.rt;
+package io.github.ramintagizade;
 
 import org.junit.Test;
 

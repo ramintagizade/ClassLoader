@@ -1,4 +1,4 @@
-package org.rt;
+package io.github.ramintagizade;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,7 @@ import java.util.jar.JarInputStream;
  * @author Ramin Taghizada
  */
 
-public class LoadJar extends ClassLoader{
+public class LoadJar {
 
     private static Logger logger = LogManager.getLogger(LoadJar.class);
     protected Map<String, byte[] > jarContents;
